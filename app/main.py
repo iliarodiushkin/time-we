@@ -321,3 +321,17 @@ def remove_from_day_plan(
     if plan:
         db.delete(plan)
         db.commit()
+
+
+
+# ── Временный эндпоинт для импорта данных (удалить после использования) ──
+@app.post("/admin/seed")
+def admin_seed(secret: str, db: Session = Depends(get_db)):
+    if secret != "timewe_seed_2026":
+        raise HTTPException(403, "Forbidden")
+    try:
+        from import_data import import_events
+        import_events()
+        return {"status": "ok", "message": "Events imported"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
