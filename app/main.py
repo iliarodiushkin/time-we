@@ -323,15 +323,35 @@ def remove_from_day_plan(
         db.commit()
 
 
+# ── Admin endpoints ────────────────────────────────────────────────────────
 
-# ── Временный эндпоинт для импорта данных (удалить после использования) ──
+ADMIN_SECRET = os.getenv("ADMIN_SECRET", "timewe_admin_2026")
+
 @app.post("/admin/seed")
 def admin_seed(secret: str, db: Session = Depends(get_db)):
-    if secret != "timewe_seed_2026":
+    if secret != ADMIN_SECRET:
         raise HTTPException(403, "Forbidden")
-    try:
-        from import_data import import_events
-        import_events()
-        return {"status": "ok", "message": "Events imported"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+    from import_data import import_events
+    import_events()
+    return {"status": "ok", "message": "Base events imported"}
+
+@app.post("/admin/kudago")
+def admin_kudago(secret: str, limit: int = 150, db: Session = Depends(get_db)):
+    if secret != ADMIN_SECRET:
+        raise HTTPException(403, "Forbidden")
+    from kudago_import import import_events as kudago_import
+    added = kudago_import(limit=limit)
+    return {"status": "ok", "added": added}
+
+@app.post("/admin/clear-events")
+def admin_clear_events(secret: str, db: Session = Depends(get_db)):
+    if secret != ADMIN_SECRET:
+        raise HTTPException(403, "Forbidden")
+    from models import Favorite, Interaction, DayPlan, Event
+    ids = [e.id for e in db.query(Event.id).all()]
+    db.query(Favorite).filter(Favorite.event_id.in_(ids)).delete(synchronize_session=False)
+    db.query(Interaction).filter(Interaction.event_id.in_(ids)).delete(synchronize_session=False)
+    db.query(DayPlan).filter(DayPlan.event_id.in_(ids)).delete(synchronize_session=False)
+    db.query(Event).delete(synchronize_session=False)
+    db.commit()
+    return {"status": "ok", "message": f"Cleared {len(ids)} events"}
