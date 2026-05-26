@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import datetime, date, timedelta
 from typing import Optional
-
+import os
 from database import engine, get_db
 import models, schemas
 from auth import (
