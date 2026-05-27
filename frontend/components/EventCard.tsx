@@ -23,7 +23,8 @@ interface Props {
   isLiked?: boolean; // внешний стейт лайка
 }
 
-export default function EventCard({ event, onDetails, onLike, compact, isLiked = false }: Props) {
+export default function EventCard({ event, onDetails, onLike, compact, isLiked = false, dateOverride }: Props) {
+  const displayDate = dateOverride || new Date();
   const [liked,   setLiked]   = useState(isLiked);
   const [loading, setLoading] = useState(false);
 
@@ -97,7 +98,7 @@ export default function EventCard({ event, onDetails, onLike, compact, isLiked =
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {event.start_time && (
             <span style={{ fontSize: 11, color: "#8E99A4" }}>
-              {new Date().toLocaleDateString("ru", { day: "numeric", month: "long" })}, {String(event.start_time).slice(0,5)}
+              {displayDate.toLocaleDateString("ru", { day: "numeric", month: "long" })}, {String(event.start_time).slice(0,5)}
             </span>
           )}
           {event.location && (
@@ -116,3 +117,6 @@ export default function EventCard({ event, onDetails, onLike, compact, isLiked =
     </div>
   );
 }
+
+
+
