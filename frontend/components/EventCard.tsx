@@ -20,7 +20,8 @@ interface Props {
   onDetails?: () => void;
   onLike?: () => void;
   compact?: boolean;
-  isLiked?: boolean; // внешний стейт лайка
+  isLiked?: boolean;
+  dateOverride?: Date; // внешний стейт лайка
 }
 
 export default function EventCard({ event, onDetails, onLike, compact, isLiked = false, dateOverride }: Props) {
@@ -117,6 +118,8 @@ export default function EventCard({ event, onDetails, onLike, compact, isLiked =
     </div>
   );
 }
+
+
 
 
 
