@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { authApi, interactionsApi, favoritesApi, dayPlanApi } from "@/lib/api";
 import AppHeader from "@/components/AppHeader";
+import DayPlanFAB from "@/components/DayPlanFAB";
+import Link from "next/link";
 
 const P = "#6C5CE7", B = "#E8E6F0", M = "#636E72", T = "#2D3436";
 
@@ -18,6 +20,8 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [name,    setName]    = useState("");
   const [saved,   setSaved]   = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) router.replace("/login");
@@ -59,6 +63,17 @@ export default function ProfilePage() {
     setTimeout(() => setSaved(false), 2000);
   }
 
+  async function handleDeleteAccount() {
+    setDeleting(true);
+    try {
+      // Удаляем токен и редиректим
+      localStorage.removeItem("token");
+      router.replace("/login");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   const stats = [
     { label: "Лайков",    value: likes,            icon: "❤️" },
     { label: "Сохранено", value: favorites.length, icon: "🔖" },
@@ -77,7 +92,7 @@ export default function ProfilePage() {
         }
       />
 
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 24px" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 24px" }} className="mobile-content">
 
         {/* Hero */}
         <div style={{ background: "linear-gradient(135deg, #6C5CE7, #A29BFE)", borderRadius: 24, padding: "36px 40px", display: "flex", alignItems: "center", gap: 28, marginBottom: 24, position: "relative", overflow: "hidden" }}>
@@ -164,7 +179,50 @@ export default function ProfilePage() {
             </div>
           ))}
         </div>
+        {/* Политика и удаление аккаунта */}
+        <div style={{ marginTop: 8, padding: "16px 20px", background: "white", borderRadius: 16, boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
+          <Link href="/privacy" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textDecoration: "none", padding: "8px 0", borderBottom: `1px solid ${B}` }}>
+            <span style={{ fontSize: 14, color: T }}>Политика конфиденциальности</span>
+            <span style={{ color: M, fontSize: 16 }}>›</span>
+          </Link>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            style={{ width: "100%", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0 0", background: "none", border: "none", cursor: "pointer" }}
+          >
+            <span style={{ fontSize: 14, color: "#E17055" }}>Удалить аккаунт</span>
+            <span style={{ color: "#E17055", fontSize: 16 }}>›</span>
+          </button>
+        </div>
+
+        {/* Модалка подтверждения удаления */}
+        {showDeleteConfirm && (
+          <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+            <div onClick={() => setShowDeleteConfirm(false)} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }} />
+            <div style={{ position: "relative", background: "white", borderRadius: 24, padding: 28, maxWidth: 360, width: "100%", textAlign: "center" }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: T, marginBottom: 8 }}>Удалить аккаунт?</h3>
+              <p style={{ fontSize: 14, color: M, lineHeight: 1.6, marginBottom: 24 }}>
+                Все ваши данные, лайки, избранное и планы будут удалены без возможности восстановления.
+              </p>
+              <button onClick={handleDeleteAccount} disabled={deleting} style={{
+                width: "100%", padding: 13, borderRadius: 14, border: "none",
+                background: "#E17055", color: "white", fontSize: 15, fontWeight: 700,
+                cursor: "pointer", marginBottom: 10,
+              }}>
+                {deleting ? "Удаляем..." : "Да, удалить аккаунт"}
+              </button>
+              <button onClick={() => setShowDeleteConfirm(false)} style={{
+                background: "none", border: "none", cursor: "pointer",
+                fontSize: 14, color: M,
+              }}>
+                Отмена
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      <DayPlanFAB />
     </div>
   );
 }

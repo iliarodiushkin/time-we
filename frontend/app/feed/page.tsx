@@ -204,23 +204,12 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {/* Мобильный хедер */}
-      <header className="header-mobile" style={{ position:"sticky", top:0, zIndex:40, background:"rgba(248,247,255,0.97)", backdropFilter:"blur(8px)", padding:"36px 20px 12px", borderBottom:`1px solid ${B}` }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-          <div>
-            <div style={{ fontSize:18, fontWeight:700, color:T }}>TimeWe</div>
-            <div style={{ fontSize:11, color:M }}>{coldStart ? "Оцени события" : "Подобрано для тебя"}</div>
-          </div>
-          <div style={{ display:"flex", gap:6 }}>
-            <button onClick={() => router.push("/favorites")} style={{ fontSize:11, color:M, background:"white", border:`1px solid ${B}`, borderRadius:999, padding:"5px 12px", cursor:"pointer" }}>🔖</button>
-            <button onClick={() => router.push("/profile")} style={{ fontSize:11, color:M, background:"white", border:`1px solid ${B}`, borderRadius:999, padding:"5px 12px", cursor:"pointer" }}>👤</button>
-            <button onClick={() => setShowReset(true)} style={{ fontSize:11, color:M, background:"white", border:`1px solid ${B}`, borderRadius:999, padding:"5px 12px", cursor:"pointer" }}>🔄</button>
-          </div>
-        </div>
-        <div style={{ display:"flex", gap:8, overflowX:"auto", margin:"0 -20px", padding:"0 20px 2px" }}>
+      {/* Мобильная строка категорий */}
+      <div className="header-mobile" style={{ background:"white", borderBottom:`1px solid ${B}`, padding:"8px 16px" }}>
+        <div style={{ display:"flex", gap:8, overflowX:"auto", margin:"0 -16px", padding:"0 16px 2px" }}>
           {CATS.map(c => chip(c.id, c.label))}
         </div>
-      </header>
+      </div>
 
       {/* Контент */}
       <div style={{ maxWidth:1280, margin:"0 auto", padding:"28px 40px 48px" }}>

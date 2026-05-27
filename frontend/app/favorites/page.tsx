@@ -64,7 +64,7 @@ export default function FavoritesPage() {
         onSearch={setSearchQ}
       />
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 40px 48px" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 40px 48px" }} className="mobile-content">
         <div style={{ marginBottom: 28 }}>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: T, marginBottom: 6 }}>🔖 Избранное</h1>
           <p style={{ fontSize: 14, color: M }}>
