@@ -39,9 +39,10 @@ export default function RegisterPage() {
   });
 
   return (
-    <div style={{ minHeight: "100dvh", background: "#F8F7FF", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100dvh", background: "#F8F7FF", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
       {/* Верхняя часть с фоном */}
+      <div style={{ width: "100%", maxWidth: 480 }}>
       <div style={{
         background: `linear-gradient(135deg, ${P}, #A29BFE)`,
         padding: "60px 32px 40px",
@@ -60,9 +61,10 @@ export default function RegisterPage() {
           Планируй досуг умнее
         </p>
       </div>
+      </div>
 
       {/* Форма */}
-      <div style={{ flex: 1, padding: "32px 24px 24px", display: "flex", flexDirection: "column", gap: 16, maxWidth: 480, width: "100%", margin: "0 auto" }}>
+      <div style={{ flex: 1, padding: "32px 24px 24px", display: "flex", flexDirection: "column", gap: 16, maxWidth: 480, width: "100%" }}>
 
         {/* Имя */}
         <div>
