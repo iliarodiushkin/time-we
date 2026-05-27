@@ -27,6 +27,16 @@ const CATS = [
 ];
 
 const TIME_CATS = new Set(["today", "tomorrow"]);
+
+function getDateForCat(cat: string | null): Date | undefined {
+  if (cat === "today") return new Date();
+  if (cat === "tomorrow") {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d;
+  }
+  return undefined;
+}
 const P="#6C5CE7", B="#E8E6F0", M="#636E72", T="#2D3436";
 
 export default function FeedPage() {
@@ -211,13 +221,31 @@ export default function FeedPage() {
         background:"rgba(248,247,255,0.97)", backdropFilter:"blur(8px)",
         borderBottom:`1px solid ${B}`
       }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"12px 16px 8px" }}>
-          <div>
-            <div style={{ fontSize:17, fontWeight:700, color:T }}>TimeWe</div>
-            <div style={{ fontSize:11, color:M }}>{coldStart ? "Оцени несколько событий" : "Подобрано для тебя"}</div>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px 8px" }}>
+          {/* Лого */}
+          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+            <div style={{ width:28, height:28, borderRadius:8, background:P, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <span style={{ color:"white", fontWeight:800, fontSize:12 }}>T</span>
+            </div>
+            <span style={{ fontSize:15, fontWeight:700, color:T }}>TimeWe</span>
           </div>
-          <div style={{ display:"flex", gap:6 }}>
-            <button onClick={() => setShowReset(true)} style={{ fontSize:11, color:M, background:"white", border:`1px solid ${B}`, borderRadius:999, padding:"5px 10px", cursor:"pointer" }}>🔄 Сброс</button>
+          {/* Навигация + сброс */}
+          <div style={{ display:"flex", alignItems:"center", gap:2 }}>
+            {[
+              { href:"/feed",         icon:"🏠", label:"Лента"      },
+              { href:"/favorites",    icon:"🔖", label:"Сохранённое" },
+              { href:"/shared-plans", icon:"👥", label:"Планы"      },
+              { href:"/profile",      icon:"👤", label:"Профиль"    },
+            ].map(item => (
+              <button key={item.href} onClick={() => router.push(item.href)}
+                style={{ width:32, height:32, borderRadius:8, border:"none", background:"transparent", cursor:"pointer", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                {item.icon}
+              </button>
+            ))}
+            <button onClick={() => setShowReset(true)}
+              style={{ width:32, height:32, borderRadius:8, border:`1px solid ${B}`, background:"white", cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", justifyContent:"center", marginLeft:2 }}>
+              🔄
+            </button>
           </div>
         </div>
         <div style={{ display:"flex", gap:8, overflowX:"auto", padding:"0 16px 10px" }}>
@@ -259,10 +287,10 @@ export default function FeedPage() {
 
             {!isLoading && events.length>0 && (<>
               <div className="feed-mobile">
-                {events.map(e=><EventCard key={e.id} event={e} onDetails={()=>setModal(e)} onLike={()=>onLike(e.id)} isLiked={likedIds.has(e.id)}/>)}
+                {events.map(e=><EventCard key={e.id} event={e} onDetails={()=>setModal(e)} onLike={()=>onLike(e.id)} isLiked={likedIds.has(e.id)} dateOverride={getDateForCat(cat)}/>)}
               </div>
               <div className="feed-desktop">
-                {events.map(e=><EventCard key={`d-${e.id}`} event={e} compact onDetails={()=>setModal(e)} onLike={()=>onLike(e.id)} isLiked={likedIds.has(e.id)}/>)}
+                {events.map(e=><EventCard key={`d-${e.id}`} event={e} compact onDetails={()=>setModal(e)} onLike={()=>onLike(e.id)} isLiked={likedIds.has(e.id)} dateOverride={getDateForCat(cat)}/>)}
               </div>
             </>)}
           </div>

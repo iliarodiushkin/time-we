@@ -7,8 +7,8 @@ const NAV = [
   {
     href: "/feed",
     label: "Лента",
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24"
+    icon: (active: boolean, size = 22) => (
+      <svg width={size} height={size} viewBox="0 0 24 24"
         fill={active ? P : "none"} stroke={active ? P : "#B2BEC3"}
         strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -19,8 +19,8 @@ const NAV = [
   {
     href: "/favorites",
     label: "Сохранённое",
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24"
+    icon: (active: boolean, size = 22) => (
+      <svg width={size} height={size} viewBox="0 0 24 24"
         fill={active ? P : "none"} stroke={active ? P : "#B2BEC3"}
         strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
@@ -30,8 +30,8 @@ const NAV = [
   {
     href: "/shared-plans",
     label: "Планы",
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24"
+    icon: (active: boolean, size = 22) => (
+      <svg width={size} height={size} viewBox="0 0 24 24"
         fill="none" stroke={active ? P : "#B2BEC3"}
         strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -44,8 +44,8 @@ const NAV = [
   {
     href: "/profile",
     label: "Профиль",
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24"
+    icon: (active: boolean, size = 22) => (
+      <svg width={size} height={size} viewBox="0 0 24 24"
         fill="none" stroke={active ? P : "#B2BEC3"}
         strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -131,25 +131,43 @@ export default function AppHeader({ rightSlot, showSearch, onSearch, searchValue
         </div>
       </header>
 
-      {/* ── МОБИЛЬНЫЙ ХЕДЕР (< 768px) — только лого ── */}
+      {/* ── МОБИЛЬНЫЙ ХЕДЕР (< 768px) ── */}
       <header className="app-header-mobile" style={{
         position: "sticky", top: 0, zIndex: 40,
-        background: "white", borderBottom: `1px solid ${B}`,
-        padding: "0 16px", height: 56,
-        display: "flex", alignItems: "center", justifyContent: "space-between"
+        background: "rgba(248,247,255,0.97)", backdropFilter: "blur(8px)",
+        borderBottom: `1px solid ${B}`,
+        padding: "10px 16px", display: "flex", alignItems: "center",
+        justifyContent: "space-between",
       }}>
+        {/* Лого */}
         <div onClick={() => router.push("/feed")}
-          style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: P, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ color: "white", fontWeight: 700, fontSize: 13 }}>T</span>
+          style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: P, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ color: "white", fontWeight: 800, fontSize: 12 }}>T</span>
           </div>
           <span style={{ fontWeight: 700, color: T, fontSize: 15 }}>TimeWe</span>
         </div>
-        {rightSlot && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {rightSlot}
-          </div>
-        )}
+        {/* Навигация */}
+        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {NAV.map(item => {
+            const active = pathname.startsWith(item.href);
+            return (
+              <button key={item.href} onClick={() => router.push(item.href)}
+                style={{
+                  width: 32, height: 32, borderRadius: 8, border: "none",
+                  background: active ? "#F0EEFF" : "transparent",
+                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                {item.icon(active, 18)}
+              </button>
+            );
+          })}
+          {rightSlot && (
+            <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 4 }}>
+              {rightSlot}
+            </div>
+          )}
+        </div>
       </header>
 
 
