@@ -64,6 +64,12 @@ body {
   overflow: hidden;
 }
 
+/* ── Мобильный хедер приложения ── */
+.app-header-mobile { display: block; }
+@media (min-width: 768px) {
+  .app-header-mobile { display: none !important; }
+}
+
 /* ── FAB планировщика (только мобилка) ── */
 .day-plan-fab {
   display: flex;

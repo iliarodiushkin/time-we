@@ -8,6 +8,7 @@ import EventModal from "@/components/EventModal";
 import DayPlanSidebar from "@/components/DayPlanSidebar";
 import AppHeader from "@/components/AppHeader";
 import ResetModal from "@/components/ResetModal";
+import DayPlanFAB from "@/components/DayPlanFAB";
 import PremiumModal from "@/components/PremiumModal";
 
 const CATS = [
@@ -204,12 +205,25 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {/* Мобильная строка категорий */}
-      <div className="header-mobile" style={{ background:"white", borderBottom:`1px solid ${B}`, padding:"8px 16px" }}>
-        <div style={{ display:"flex", gap:8, overflowX:"auto", margin:"0 -16px", padding:"0 16px 2px" }}>
+      {/* Мобильный хедер ленты */}
+      <header className="app-header-mobile" style={{
+        position:"sticky", top:0, zIndex:40,
+        background:"rgba(248,247,255,0.97)", backdropFilter:"blur(8px)",
+        borderBottom:`1px solid ${B}`
+      }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"12px 16px 8px" }}>
+          <div>
+            <div style={{ fontSize:17, fontWeight:700, color:T }}>TimeWe</div>
+            <div style={{ fontSize:11, color:M }}>{coldStart ? "Оцени несколько событий" : "Подобрано для тебя"}</div>
+          </div>
+          <div style={{ display:"flex", gap:6 }}>
+            <button onClick={() => setShowReset(true)} style={{ fontSize:11, color:M, background:"white", border:`1px solid ${B}`, borderRadius:999, padding:"5px 10px", cursor:"pointer" }}>🔄 Сброс</button>
+          </div>
+        </div>
+        <div style={{ display:"flex", gap:8, overflowX:"auto", padding:"0 16px 10px" }}>
           {CATS.map(c => chip(c.id, c.label))}
         </div>
-      </div>
+      </header>
 
       {/* Контент */}
       <div style={{ maxWidth:1280, margin:"0 auto", padding:"28px 40px 48px" }}>
@@ -280,6 +294,8 @@ export default function FeedPage() {
           onAddToDay={onAddToDay}
         />
       )}
+
+      <DayPlanFAB />
 
       {showReset && (
         <ResetModal

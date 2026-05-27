@@ -2,7 +2,24 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import "./globals.css";
+import DayPlanFAB from "@/components/DayPlanFAB";
+
+// Страницы где FAB не нужен
+const NO_FAB_PATHS = ["/login", "/register", "/onboarding", "/privacy"];
+
+function LayoutContent({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const showFAB = !NO_FAB_PATHS.some(p => pathname.startsWith(p));
+
+  return (
+    <>
+      {children}
+      {showFAB && <DayPlanFAB />}
+    </>
+  );
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
@@ -26,7 +43,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          {children}
+          <LayoutContent>
+            {children}
+          </LayoutContent>
         </QueryClientProvider>
       </body>
     </html>

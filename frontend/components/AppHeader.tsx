@@ -132,7 +132,7 @@ export default function AppHeader({ rightSlot, showSearch, onSearch, searchValue
       </header>
 
       {/* ── МОБИЛЬНЫЙ ХЕДЕР (< 768px) — только лого ── */}
-      <header className="header-mobile" style={{
+      <header className="app-header-mobile" style={{
         position: "sticky", top: 0, zIndex: 40,
         background: "white", borderBottom: `1px solid ${B}`,
         padding: "0 16px", height: 56,
