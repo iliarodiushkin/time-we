@@ -48,7 +48,8 @@ export default function FeedPage() {
   const [showReset,  setShowReset]  = useState(false);
   const [likedIds,   setLikedIds]   = useState<Set<number>>(new Set());
   const [searchQ,    setSearchQ]    = useState("");
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters,    setShowFilters]    = useState(false);
+  const [pendingRefresh, setPendingRefresh] = useState(false); // есть новые лайки — показать кнопку
 
   useEffect(() => {
     if (!localStorage.getItem("token")) router.replace("/login");
@@ -92,20 +93,24 @@ export default function FeedPage() {
     enabled:  cat !== null,
   });
 
-  // onLike — только добавляет в likedIds (не удаляет)
+  // onLike — добавляет в likedIds и ставит флаг "есть обновления"
   const onLike = useCallback((id?: number) => {
     if (id) {
       setLikedIds(prev => {
         const next = new Set(prev);
-        next.add(id); // только добавляем, никогда не удаляем через этот колбэк
+        next.add(id);
         return next;
       });
     }
-    setTimeout(() => {
-      qc.invalidateQueries({ queryKey: ["feed"] });
-      qc.invalidateQueries({ queryKey: ["interactions"] });
-    }, 600);
+    // Не обновляем ленту автоматически — показываем кнопку
+    setPendingRefresh(true);
+    qc.invalidateQueries({ queryKey: ["interactions"] });
   }, [qc]);
+
+  function refreshFeed() {
+    setPendingRefresh(false);
+    qc.invalidateQueries({ queryKey: ["feed"] });
+  }
 
   // onDislike — удаляет из likedIds и обновляет ленту
   const onDislike = useCallback((id?: number) => {
@@ -176,6 +181,16 @@ export default function FeedPage() {
     </button>
   );
 
+  const refreshBtn = pendingRefresh && (
+    <button onClick={refreshFeed}
+      style={{ display:"flex", alignItems:"center", gap:6, fontSize:12, color:"white", background:"linear-gradient(135deg,#6C5CE7,#A29BFE)", border:"none", borderRadius:999, padding:"6px 16px", cursor:"pointer", whiteSpace:"nowrap", animation:"pulse 1.5s infinite" }}>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}>
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
+      </svg>
+      Обновить ленту
+    </button>
+  );
+
   return (
     <div style={{minHeight:"100vh", background:"#F8F7FF"}}>
 
@@ -187,7 +202,7 @@ export default function FeedPage() {
           onSearch={setSearchQ}
           rightSlot={
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {coldStart && <span style={{ fontSize:11, color:M, background:"#F8F7FF", border:`1px solid ${B}`, borderRadius:999, padding:"5px 12px", whiteSpace:"nowrap" }}>💡 Оцени события</span>}
+              {refreshBtn}
               {resetBtn}
               <button onClick={() => { localStorage.removeItem("token"); router.replace("/login"); }}
                 style={{ fontSize:12, color:M, background:"white", border:`1px solid ${B}`, borderRadius:8, padding:"6px 14px", cursor:"pointer" }}>
@@ -242,6 +257,13 @@ export default function FeedPage() {
                 {item.svg}
               </button>
             ))}
+            {pendingRefresh && (
+              <button onClick={refreshFeed}
+                style={{ height:32, padding:"0 10px", borderRadius:8, border:"none", background:"linear-gradient(135deg,#6C5CE7,#A29BFE)", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:"white", fontSize:11, fontWeight:600, marginLeft:2 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+                Обновить
+              </button>
+            )}
             <button onClick={() => setShowReset(true)}
               style={{ width:32, height:32, borderRadius:8, border:`1px solid ${B}`, background:"white", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", marginLeft:2 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={M} strokeWidth={2.2}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
