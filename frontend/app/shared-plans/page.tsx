@@ -59,19 +59,38 @@ export default function SharedPlansPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#F8F7FF" }}>
 
-      <AppHeader
-        rightSlot={
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#6C5CE7", background: "#F0EEFF", padding: "3px 10px", borderRadius: 999 }}>Premium</span>
-            {!selected && (
-              <button onClick={() => setShowPremium(true)}
-                style={{ padding: "7px 16px", borderRadius: 12, border: "none", background: "linear-gradient(135deg,#6C5CE7,#A29BFE)", color: "white", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                + Создать план
-              </button>
-            )}
-          </div>
-        }
-      />
+      <AppHeader />
+
+      {/* Мобильная панель действий под хедером */}
+      <div className="app-header-mobile" style={{
+        background: "white", borderBottom: "1px solid #E8E6F0",
+        padding: "8px 16px", display: "flex", alignItems: "center", gap: 8
+      }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#6C5CE7", background: "#F0EEFF", padding: "4px 12px", borderRadius: 999 }}>✨ Premium</span>
+        {!selected && (
+          <button onClick={() => setShowPremium(true)}
+            style={{ padding: "6px 14px", borderRadius: 10, border: "none", background: "linear-gradient(135deg,#6C5CE7,#A29BFE)", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+            + Создать план
+          </button>
+        )}
+      </div>
+
+      {/* Десктопный rightSlot */}
+      <div className="header-desktop" style={{ display: "none" }}>
+        <AppHeader
+          rightSlot={
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#6C5CE7", background: "#F0EEFF", padding: "3px 10px", borderRadius: 999 }}>Premium</span>
+              {!selected && (
+                <button onClick={() => setShowPremium(true)}
+                  style={{ padding: "7px 16px", borderRadius: 12, border: "none", background: "linear-gradient(135deg,#6C5CE7,#A29BFE)", color: "white", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                  + Создать план
+                </button>
+              )}
+            </div>
+          }
+        />
+      </div>
 
       {/* Список планов */}
       {!selected && (
